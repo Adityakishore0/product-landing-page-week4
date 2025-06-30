@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APEX Fitness - Premium Home Gym Equipment</title>
+    <meta name="description" content="Transform your home into a professional gym with APEX premium fitness equipment. Build strength, endurance, and achieve your fitness goals.">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.16.16/framer-motion.min.js"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'apex-red': '#ff3366',
+                        'apex-dark': '#0a0a0a',
+                        'apex-gray': '#1a1a1a',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'slide-up': 'slideUp 0.8s ease-out forwards',
+                        'fade-in': 'fadeIn 1s ease-out forwards',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(45deg, #ff3366, #ff6b9d, #c44569);
+            background-size: 200% 200%;
+            animation: gradient 8s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .glass-effect-light {
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+        
+        .hover-scale {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.05) translateY(-5px);
+        }
+        
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.3);
+        }
+        
+        .neon-glow:hover {
+            box-shadow: 0 0 30px rgba(255, 51, 102, 0.6);
+        }
+
+        .video-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        .video-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-container {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .close-video {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            background: rgba(255, 51, 102, 0.8);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-apex-dark text-gray-900 dark:text-white overflow-x-hidden transition-colors duration-300">
+    <nav class="fixed top-0 w-full z-50 glass-effect dark:glass-effect">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="text-2xl font-bold text-apex-red">APEX</div>
+                    <div class="text-sm ml-2 text-gray-600 dark:text-gray-300">FITNESS</div>
+                </div>
+                
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="hover:text-apex-red transition-colors">Home</a>
+                    <a href="#products" class="hover:text-apex-red transition-colors">Products</a>
+                    <a href="#features" class="hover:text-apex-red transition-colors">Features</a>
+                    <a href="#testimonials" class="hover:text-apex-red transition-colors">Reviews</a>
+                    <a href="#contact" class="hover:text-apex-red transition-colors">Contact</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                        <svg id="sun-icon" class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <svg id="moon-icon" class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                    </button>
+                    <button class="bg-apex-red hover:bg-red-600 px-6 py-2 rounded-full font-semibold transition-all neon-glow text-white">
+                        Get Started
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="min-h-screen flex items-center relative overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                 alt="Gym background" class="w-full h-full object-cover opacity-20">
+            <div class="absolute inset-0 bg-gradient-to-r from-white via-transparent to-white dark:from-apex-dark dark:via-transparent dark:to-apex-dark"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8 animate-on-scroll">
+                    <div class="space-y-4">
+                        <h1 class="text-5xl md:text-7xl font-black leading-tight">
+                            <span class="hero-gradient bg-clip-text text-transparent">TRANSFORM</span><br>
+                            YOUR BODY
+                        </h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-lg">
+                            Professional-grade fitness equipment designed for champions. Build strength, endurance, and confidence in your own space.
+                        </p>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button class="bg-apex-red hover:bg-red-600 px-8 py-4 rounded-full font-bold text-lg transition-all transform hover:scale-105 neon-glow text-white">
+                            Shop Now - $299
+                        </button>
+                        <button id="watch-demo" class="border border-gray-900 dark:border-white hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-apex-dark px-8 py-4 rounded-full font-bold text-lg transition-all">
+                            Watch Demo
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center space-x-8 pt-8">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-apex-red">50K+</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Happy Customers</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-apex-red">4.9★</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Average Rating</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-apex-red">24/7</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Support</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative animate-on-scroll">
+                    <div class="animate-float">
+                        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+                             alt="Premium Dumbbell" class="w-full max-w-lg mx-auto rounded-3xl shadow-2xl">
+                    </div>
+                    <div class="absolute -top-10 -right-10 w-20 h-20 bg-apex-red rounded-full animate-pulse-slow opacity-20"></div>
+                    <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-red-500 rounded-full animate-pulse-slow opacity-10"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="video-modal" class="video-modal">
+        <div class="video-container">
+            <span class="close-video">&times;</span>
+            <video id="demo-video" controls width="800" height="450">
+                <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <section id="products" class="py-20 bg-gray-100 dark:bg-apex-gray transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 animate-on-scroll">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">Premium Equipment</h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                    Carefully crafted fitness equipment that delivers professional gym results at home
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white dark:bg-apex-dark rounded-3xl p-8 hover-scale animate-on-scroll border border-gray-200 dark:border-gray-800 transition-colors duration-300">
+                    <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                         alt="Adjustable Dumbbells" class="w-full h-48 object-cover rounded-2xl mb-6">
+                    <h3 class="text-2xl font-bold mb-3">Smart Dumbbells</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Adjustable weight system with digital tracking. Perfect for all fitness levels.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-3xl font-bold text-apex-red">$299</span>
+                        <button class="bg-apex-red hover:bg-red-600 px-6 py-2 rounded-full font-semibold transition-all text-white">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-white dark:bg-apex-dark rounded-3xl p-8 hover-scale animate-on-scroll border border-gray-200 dark:border-gray-800 transition-colors duration-300">
+                    <img src="https://images.unsplash.com/photo-1605296867424-35fc25c9212a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                         alt="Resistance Bands" class="w-full h-48 object-cover rounded-2xl mb-6">
+                    <h3 class="text-2xl font-bold mb-3">Power Bands</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Professional resistance bands set with multiple resistance levels and accessories.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-3xl font-bold text-apex-red">$89</span>
+                        <button class="bg-apex-red hover:bg-red-600 px-6 py-2 rounded-full font-semibold transition-all text-white">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-white dark:bg-apex-dark rounded-3xl p-8 hover-scale animate-on-scroll border border-gray-200 dark:border-gray-800 transition-colors duration-300">
+                    <img src="https://images.unsplash.com/photo-1623874514711-0f321325f318?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                         alt="Yoga Mat" class="w-full h-48 object-cover rounded-2xl mb-6">
+                    <h3 class="text-2xl font-bold mb-3">Premium Mat</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Ultra-grip yoga and exercise mat with alignment guides and premium materials.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-3xl font-bold text-apex-red">$49</span>
+                        <button class="bg-apex-red hover:bg-red-600 px-6 py-2 rounded-full font-semibold transition-all text-white">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-20 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="animate-on-scroll">
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                         alt="Workout Session" class="w-full rounded-3xl shadow-2xl">
+                </div>
+                
+                <div class="space-y-8 animate-on-scroll">
+                    <h2 class="text-4xl md:text-5xl font-bold">Why Choose APEX?</h2>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-apex-red rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-xl font-bold text-white">✓</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">Professional Quality</h3>
+                                <p class="text-gray-600 dark:text-gray-400">Commercial-grade materials and construction for lasting durability.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-apex-red rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-xl font-bold text-white">✓</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">Smart Technology</h3>
+                                <p class="text-gray-600 dark:text-gray-400">Integrated sensors and app connectivity for progress tracking.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-apex-red rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-xl font-bold text-white">✓</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">Space Efficient</h3>
+                                <p class="text-gray-600 dark:text-gray-400">Compact design that maximizes your workout potential in minimal space.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="bg-apex-red hover:bg-red-600 px-8 py-4 rounded-full font-bold text-lg transition-all neon-glow text-white">
+                        Learn More
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="py-20 bg-gray-100 dark:bg-apex-gray transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 animate-on-scroll">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">What Our Customers Say</h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400">Join thousands of satisfied customers who transformed their fitness journey</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white dark:bg-apex-dark rounded-3xl p-8 animate-on-scroll border border-gray-200 dark:border-gray-800 transition-colors duration-300">
+                    <div class="flex items-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" 
+                             alt="Customer" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h3 class="font-bold">Alex Johnson</h3>
+                            <div class="text-apex-red">★★★★★</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400">"APEX equipment transformed my home workouts. The quality is incredible and the smart features keep me motivated!"</p>
+                </div>
+                
+                <div class="bg-white dark:bg-apex-dark rounded-3xl p-8 animate-on-scroll border border-gray-200 dark:border-gray-800 transition-colors duration-300">
+                    <div class="flex items-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" 
+                             alt="Customer" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h3 class="font-bold">Sarah Williams</h3>
+                            <div class="text-apex-red">★★★★★</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400">"Finally found equipment that matches gym quality. The app integration is a game-changer for tracking progress."</p>
+                </div>
+                
+                <div class="bg-white dark:bg-apex-dark rounded-3xl p-8 animate-on-scroll border border-gray-200 dark:border-gray-800 transition-colors duration-300">
+                    <div class="flex items-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" 
+                             alt="Customer" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h3 class="font-bold">Mike Chen</h3>
+                            <div class="text-apex-red">★★★★★</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400">"Best investment I've made for my health. Compact, efficient, and built to last. Highly recommend APEX!"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 relative overflow-hidden transition-colors duration-300">
+        <div class="absolute inset-0 hero-gradient opacity-10"></div>
+        <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 relative z-10 animate-on-scroll">
+            <h2 class="text-4xl md:text-6xl font-bold mb-6">Ready to Transform?</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+                Join the APEX community and start your fitness transformation today. Free shipping and 30-day money-back guarantee.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-apex-red hover:bg-red-600 px-12 py-4 rounded-full font-bold text-xl transition-all transform hover:scale-105 neon-glow text-white">
+                    Start Your Journey - $299
+                </button>
+                <button class="border border-gray-900 dark:border-white hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-apex-dark px-12 py-4 rounded-full font-bold text-xl transition-all">
+                    Contact Sales
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact" class="bg-gray-100 dark:bg-apex-dark py-16 border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="space-y-4">
+                    <div class="flex items-center">
+                        <div class="text-2xl font-bold text-apex-red">APEX</div>
+                        <div class="text-sm ml-2 text-gray-500 dark:text-gray-400">FITNESS</div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400">Transform your body with professional-grade fitness equipment designed for champions.</p>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold mb-4">Products</h3>
+                    <ul class="space-y-2 text-gray-600 dark:text-gray-400">
+                        <li><a href="#" class="hover:text-apex-red transition-colors">Smart Dumbbells</a></li>
+                        <li><a href="#" class="hover:text-apex-red transition-colors">Power Bands</a></li>
+                        <li><a href="#" class="hover:text-apex-red transition-colors">Premium Mats</a></li>
+                        <li><a href="#" class="hover:text-apex-red transition-colors">Accessories</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold mb-4">Support</h3>
+                    <ul class="space-y-2 text-gray-600 dark:text-gray-400">
+                        <li><a href="#" class="hover:text-apex-red transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-apex-red transition-colors">Shipping Info</a></li>
+                        <li><a href="#" class="hover:text-apex-red transition-colors">Returns</a></li>
+                        <li><a href="#" class="hover:text-apex-red transition-colors">Warranty</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold mb-4">Connect</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">📧 adityakishore0074@gmail.com</p>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">📞 1-800-APEX-FIT</p>
+                    <div class="flex space-x-4">
+  <button class="w-10 h-10 bg-apex-red rounded-full hover:bg-red-600 transition-colors flex items-center justify-center">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" class="w-5 h-5">
+      <path d="M22.675 0h-21.35C.596 0 0 .596 0 1.325v21.351C0 23.404.596 24 1.325 24h11.483v-9.294H9.691v-3.622h3.117V8.413c0-3.1 1.894-4.788 4.66-4.788 1.325 0 2.464.099 2.796.143v3.24l-1.918.001c-1.504 0-1.796.715-1.796 1.763v2.31h3.587l-.467 3.622h-3.12V24h6.116C23.404 24 24 23.404 24 22.676V1.325C24 .596 23.404 0 22.675 0z"/>
+    </svg>
+  </button>
+
+  <button class="w-10 h-10 bg-apex-red rounded-full hover:bg-red-600 transition-colors flex items-center justify-center">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" class="w-5 h-5">
+      <path d="M24 4.557a9.83 9.83 0 01-2.828.775 4.933 4.933 0 002.165-2.723c-.951.566-2.005.977-3.127 1.2A4.918 4.918 0 0016.616 3c-2.72 0-4.924 2.204-4.924 4.924 0 .386.043.762.127 1.124C7.728 8.87 4.1 6.884 1.671 3.884a4.93 4.93 0 00-.666 2.475c0 1.708.87 3.216 2.188 4.099a4.904 4.904 0 01-2.231-.616c-.001.021-.001.042-.001.064 0 2.385 1.697 4.374 3.946 4.827a4.935 4.935 0 01-2.224.084c.626 1.954 2.444 3.376 4.6 3.416A9.868 9.868 0 010 19.54a13.94 13.94 0 007.548 2.212c9.056 0 14.01-7.496 14.01-13.986 0-.213-.005-.425-.014-.636A10.012 10.012 0 0024 4.557z"/>
+    </svg>
+  </button>
+
+  <button class="w-10 h-10 bg-apex-red rounded-full hover:bg-red-600 transition-colors flex items-center justify-center">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" class="w-5 h-5">
+      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.206.056 2.003.246 2.466.415a4.92 4.92 0 011.78 1.151 4.92 4.92 0 011.151 1.779c.169.463.359 1.26.415 2.466.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.056 1.206-.246 2.003-.415 2.466a4.902 4.902 0 01-1.151 1.78 4.902 4.902 0 01-1.78 1.151c-.463.169-1.26.359-2.466.415-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.206-.056-2.003-.246-2.466-.415a4.92 4.92 0 01-1.779-1.151 4.92 4.92 0 01-1.151-1.78c-.169-.463-.359-1.26-.415-2.466C2.175 15.747 2.163 15.367 2.163 12s.012-3.584.07-4.85c.056-1.206.246-2.003.415-2.466A4.92 4.92 0 013.799 3.11 4.92 4.92 0 015.578 1.96c.463-.169 1.26-.359 2.466-.415C8.416 1.674 8.796 1.663 12 1.663m0-1.663C8.741 0 8.332.013 7.052.072 5.771.13 4.726.342 3.905.671a6.56 6.56 0 00-2.37 1.548A6.56 6.56 0 00.671 4.589C.342 5.41.13 6.456.072 7.737.013 9.017 0 9.426 0 12s.013 2.983.072 4.263c.058 1.281.27 2.327.599 3.148a6.56 6.56 0 001.548 2.37 6.56 6.56 0 002.37 1.548c.821.329 1.867.541 3.148.599 1.28.058 1.689.072 4.263.072s2.983-.013 4.263-.072c1.281-.058 2.327-.27 3.148-.599a6.56 6.56 0 002.37-1.548 6.56 6.56 0 001.548-2.37c.329-.821.541-1.867.599-3.148.058-1.28.072-1.689.072-4.263s-.013-2.983-.072-4.263c-.058-1.281-.27-2.327-.599-3.148a6.56 6.56 0 00-1.548-2.37 6.56 6.56 0 00-2.37-1.548c-.821-.329-1.867-.541-3.148-.599C15.267.013 14.858 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zm0 10.162a3.999 3.999 0 110-7.998 3.999 3.999 0 010 7.998zm6.406-11.845a1.44 1.44 0 11-2.881 0 1.44 1.44 0 012.881 0z"/>
+    </svg>
+  </button>
+</div>
+
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-200 dark:border-gray-800 mt-12 pt-8 text-center text-gray-500 dark:text-gray-400">
+                <p>&copy; 2025 APEX Fitness. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        } else {
+            html.classList.remove('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
+        });
+
+        const watchDemoBtn = document.getElementById('watch-demo');
+        const videoModal = document.getElementById('video-modal');
+        const closeVideo = document.querySelector('.close-video');
+        const demoVideo = document.getElementById('demo-video');
+
+        watchDemoBtn.addEventListener('click', () => {
+            videoModal.classList.add('show');
+            demoVideo.src = 'https://videos.pexels.com/video-files/6740240/6740240-hd_1920_1080_25fps.mp4';
+            demoVideo.play();
+        });
+
+        closeVideo.addEventListener('click', () => {
+            videoModal.classList.remove('show');
+            demoVideo.pause();
+            demoVideo.currentTime = 0;
+        });
+
+        videoModal.addEventListener('click', (e) => {
+            if (e.target === videoModal) {
+                videoModal.classList.remove('show');
+                demoVideo.pause();
+                demoVideo.currentTime = 0;
+            }
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const rect = this.getBoundingClientRect();
+                const ripple = document.createElement('span');
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    left: ${x}px;
+                    top: ${y}px;
+                    width: ${size}px;
+                    height: ${size}px;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: scale(0);
+                    animation: ripple 0.6s linear;
+                    pointer-events: none;
+                `;
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+    </script>
+</body>
+</html>
